@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="健康紀錄">
+<link rel="manifest" href="./manifest.json">
+<title>健康紀錄</title>
+<style>
+:root {
+  --bg:#f7f6f3;--surface:#fff;--surface2:#f0efec;--border:rgba(0,0,0,0.08);
+  --border2:rgba(0,0,0,0.13);--text:#1a1a18;--text2:#6b6b67;--text3:#a8a8a4;
+  --red:#c0622a;--blue:#2a6bc0;--green:#2a8c5a;--radius:14px;--rsm:9px;
+}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#111110;--surface:#1e1e1c;--surface2:#272725;--border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.13);--text:#f0efe8;--text2:#909088;--text3:#585854;}
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overscroll-behavior:none;}
+body{font-family:-apple-system,'Helvetica Neue',sans-serif;background:var(--bg);color:var(--text);
+  max-width:480px;margin:0 auto;min-height:100vh;}
+
+/* Install guide overlay */
+#install-guide{position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:9999;
+  display:flex;align-items:flex-end;justify-content:center;padding:0 16px 32px;}
+#install-guide.hidden{display:none;}
+.ig-card{background:var(--surface);border-radius:var(--radius);padding:24px 20px;width:100%;max-width:440px;}
+.ig-title{font-size:18px;font-weight:600;margin-bottom:6px;}
+.ig-sub{font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.6;}
+.ig-steps{display:flex;flex-direction:column;gap:14px;margin-bottom:20px;}
+.ig-step{display:flex;align-items:flex-start;gap:12px;}
+.ig-num{width:24px;height:24px;border-radius:50%;background:var(--text);color:var(--bg);
+  font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.ig-text{font-size:14px;line-height:1.6;color:var(--text);}
+.ig-text em{font-style:normal;font-weight:600;}
+.ig-btn{width:100%;padding:14px;border-radius:var(--rsm);border:none;background:var(--text);
+  color:var(--bg);font-size:15px;font-weight:600;cursor:pointer;}
+
+.header{padding:54px 20px 14px;display:flex;align-items:flex-end;justify-content:space-between;}
+.header-title{font-size:26px;font-weight:700;letter-spacing:-0.5px;}
+.header-date{font-size:13px;color:var(--text2);padding-bottom:3px;}
+
+.tabs{display:flex;gap:6px;padding:0 20px 14px;}
+.tab{flex:1;padding:9px 0;border-radius:var(--rsm);font-size:13px;font-weight:500;
+  border:none;cursor:pointer;background:var(--surface2);color:var(--text2);transition:background .15s,color .15s;}
+.tab.active[data-tab="g"]{background:var(--red);color:#fff;}
+.tab.active[data-tab="b"]{background:var(--blue);color:#fff;}
+.tab.active[data-tab="w"]{background:var(--green);color:#fff;}
+
+.page{display:none;padding:0 20px 100px;}
+.page.active{display:block;}
+
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.stat{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--rsm);padding:13px 12px;}
+.stat-lbl{font-size:11px;color:var(--text3);margin-bottom:3px;}
+.stat-val{font-size:19px;font-weight:600;letter-spacing:-0.4px;}
+.stat-val.r{color:var(--red)}.stat-val.b{color:var(--blue)}.stat-val.g{color:var(--green)}
+.stat-unit{font-size:11px;color:var(--text3);font-weight:400;}
+
+.chart-box{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);
+  padding:14px 14px 10px;margin-bottom:14px;}
+.chart-lbl{font-size:12px;color:var(--text2);margin-bottom:10px;}
+canvas{display:block;width:100% !important;}
+
+.card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);
+  padding:18px;margin-bottom:14px;}
+.card-title{font-size:11px;font-weight:500;color:var(--text3);letter-spacing:.6px;text-transform:uppercase;margin-bottom:14px;}
+.row{display:flex;gap:8px;margin-bottom:10px;}
+.grp{flex:1;}
+.lbl{font-size:11px;color:var(--text3);margin-bottom:4px;}
+.wrap{position:relative;}
+.unit{position:absolute;right:11px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text3);pointer-events:none;}
+input[type=number],input[type=datetime-local],select,textarea{
+  width:100%;padding:10px 11px;border-radius:var(--rsm);border:0.5px solid var(--border2);
+  background:var(--surface2);color:var(--text);font-family:inherit;font-size:15px;
+  outline:none;-webkit-appearance:none;appearance:none;}
+input[type=number]{padding-right:34px;}
+input[type=datetime-local]{font-size:13px;}
+input:focus,select:focus,textarea:focus{border-color:var(--text2);}
+textarea{resize:none;height:56px;font-size:13px;}
+.save-btn{width:100%;padding:13px;border-radius:var(--rsm);border:none;font-size:15px;
+  font-weight:600;cursor:pointer;color:#fff;margin-top:4px;}
+.save-btn:active{opacity:.75;}
+.save-btn.r{background:var(--red)}.save-btn.b{background:var(--blue)}.save-btn.g{background:var(--green)}
+.ref{font-size:11px;color:var(--text3);margin-top:8px;line-height:1.7;}
+
+.filters{display:flex;gap:5px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px;}
+.filters::-webkit-scrollbar{display:none;}
+.fb{flex-shrink:0;padding:5px 13px;border-radius:20px;border:0.5px solid var(--border2);
+  background:var(--surface);color:var(--text2);font-size:12px;cursor:pointer;}
+.fb.on{background:var(--text);color:var(--bg);border-color:var(--text);}
+
+.sec{font-size:11px;font-weight:500;color:var(--text3);letter-spacing:.6px;text-transform:uppercase;margin-bottom:10px;}
+
+.list{display:flex;flex-direction:column;gap:7px;}
+.rec{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--rsm);
+  padding:12px 14px;display:flex;justify-content:space-between;align-items:flex-start;}
+.rv{font-size:16px;font-weight:600;letter-spacing:-.3px;}
+.rv.r{color:var(--red)}.rv.b{color:var(--blue)}.rv.g{color:var(--green)}
+.rn{font-size:12px;color:var(--text3);margin-top:2px;}
+.tag{font-size:11px;padding:2px 8px;border-radius:20px;display:inline-block;margin-top:3px;}
+.tn{background:rgba(42,140,90,.12);color:#2a7a4e;}
+.th{background:rgba(192,98,42,.12);color:#a85020;}
+.tl{background:rgba(42,107,192,.12);color:#2059a8;}
+@media(prefers-color-scheme:dark){
+  .tn{color:#5acea4;background:rgba(42,140,90,.2);}
+  .th{color:#e08060;background:rgba(192,98,42,.2);}
+  .tl{color:#70a4e0;background:rgba(42,107,192,.2);}
+}
+.del{background:none;border:none;color:var(--text3);font-size:18px;padding:2px 6px;cursor:pointer;border-radius:4px;line-height:1;}
+.del:active{color:#e24b4a;}
+.rt{font-size:11px;color:var(--text3);text-align:right;}
+.empty{text-align:center;padding:36px 20px;color:var(--text3);font-size:13px;}
+
+.toast{position:fixed;bottom:76px;left:50%;transform:translateX(-50%) translateY(16px);
+  background:var(--text);color:var(--bg);padding:9px 18px;border-radius:20px;
+  font-size:13px;opacity:0;transition:all .2s;z-index:1000;white-space:nowrap;pointer-events:none;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<div id="install-guide" class="hidden">
+  <div class="ig-card">
+    <div class="ig-title">加入手機桌面</div>
+    <div class="ig-sub">加入後可完全離線使用，資料存在本機不上傳。</div>
+    <div class="ig-steps">
+      <div class="ig-step"><div class="ig-num">1</div><div class="ig-text">點 Safari 下方工具列的 <em>分享按鈕</em>（方塊加箭頭）</div></div>
+      <div class="ig-step"><div class="ig-num">2</div><div class="ig-text">向下捲動，點選 <em>「加入主畫面」</em></div></div>
+      <div class="ig-step"><div class="ig-num">3</div><div class="ig-text">右上角點 <em>「新增」</em>，即可從桌面開啟</div></div>
+    </div>
+    <button class="ig-btn" onclick="dismissGuide()">先繼續使用</button>
+  </div>
+</div>
+
+<div class="header">
+  <div class="header-title">健康紀錄</div>
+  <div class="header-date" id="todayDate"></div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" data-tab="g" onclick="sw('g')">血糖</button>
+  <button class="tab" data-tab="b" onclick="sw('b')">血壓</button>
+  <button class="tab" data-tab="w" onclick="sw('w')">體重</button>
+</div>
+
+<!-- 血糖 -->
+<div class="page active" id="pg-g">
+  <div class="stats" id="gs"></div>
+  <div class="chart-box"><div class="chart-lbl">近 14 天血糖</div><canvas id="gc" height="120"></canvas></div>
+  <div class="card">
+    <div class="card-title">新增量測</div>
+    <div class="row">
+      <div class="grp" style="flex:2"><div class="lbl">血糖值</div>
+        <div class="wrap"><input type="number" id="gv" placeholder="100" step="0.1" min="20" max="600" inputmode="decimal"><span class="unit">mg/dL</span></div></div>
+      <div class="grp"><div class="lbl">時機</div>
+        <select id="gt"><option>空腹</option><option>飯前</option><option>飯後2H</option><option>睡前</option><option>隨機</option></select></div>
+    </div>
+    <div class="row"><div class="grp"><div class="lbl">日期時間</div><input type="datetime-local" id="gdt"></div></div>
+    <div class="row"><div class="grp"><div class="lbl">備註（選填）</div><textarea id="gn" placeholder="例：運動後、忘記吃藥…"></textarea></div></div>
+    <button class="save-btn r" onclick="saveG()">儲存</button>
+    <div class="ref">參考：空腹 70–100 · 飯後2H &lt;140 · 糖尿病飯後 &lt;180 mg/dL</div>
+  </div>
+  <div class="sec">歷史紀錄</div>
+  <div class="filters" id="gf">
+    <button class="fb on" onclick="gFilter('all',this)">全部</button>
+    <button class="fb" onclick="gFilter('空腹',this)">空腹</button>
+    <button class="fb" onclick="gFilter('飯前',this)">飯前</button>
+    <button class="fb" onclick="gFilter('飯後2H',this)">飯後2H</button>
+    <button class="fb" onclick="gFilter('睡前',this)">睡前</button>
+  </div>
+  <div class="list" id="gl"></div>
+</div>
+
+<!-- 血壓 -->
+<div class="page" id="pg-b">
+  <div class="stats" id="bs"></div>
+  <div class="chart-box"><div class="chart-lbl">近 14 天血壓</div><canvas id="bc" height="120"></canvas></div>
+  <div class="card">
+    <div class="card-title">新增量測</div>
+    <div class="row">
+      <div class="grp"><div class="lbl">收縮壓（高）</div><div class="wrap"><input type="number" id="bsys" placeholder="120" min="60" max="300" inputmode="numeric"><span class="unit">mmHg</span></div></div>
+      <div class="grp"><div class="lbl">舒張壓（低）</div><div class="wrap"><input type="number" id="bdia" placeholder="80" min="40" max="200" inputmode="numeric"><span class="unit">mmHg</span></div></div>
+      <div class="grp"><div class="lbl">心率</div><div class="wrap"><input type="number" id="bhr" placeholder="72" min="30" max="220" inputmode="numeric"><span class="unit">bpm</span></div></div>
+    </div>
+    <div class="row">
+      <div class="grp"><div class="lbl">時機</div><select id="bt"><option>起床</option><option>睡前</option><option>早上</option><option>下午</option><option>其他</option></select></div>
+      <div class="grp" style="flex:2"><div class="lbl">日期時間</div><input type="datetime-local" id="bdt"></div>
+    </div>
+    <div class="row"><div class="grp"><div class="lbl">備註（選填）</div><textarea id="bn" placeholder="例：量了三次取最後一次…"></textarea></div></div>
+    <button class="save-btn b" onclick="saveB()">儲存</button>
+    <div class="ref">參考：正常 &lt;120/80 · 偏高 120–129/&lt;80 · 高血壓 ≥130/80 mmHg</div>
+  </div>
+  <div class="sec">歷史紀錄</div>
+  <div class="list" id="bl"></div>
+</div>
+
+<!-- 體重 -->
+<div class="page" id="pg-w">
+  <div class="stats" id="ws"></div>
+  <div class="chart-box"><div class="chart-lbl">近 30 天體重</div><canvas id="wc" height="120"></canvas></div>
+  <div class="card">
+    <div class="card-title">新增量測</div>
+    <div class="row">
+      <div class="grp"><div class="lbl">體重</div><div class="wrap"><input type="number" id="wv" placeholder="65.0" step="0.1" min="20" max="300" inputmode="decimal"><span class="unit">kg</span></div></div>
+      <div class="grp"><div class="lbl">體脂（選填）</div><div class="wrap"><input type="number" id="wf" placeholder="20.0" step="0.1" min="5" max="60" inputmode="decimal"><span class="unit">%</span></div></div>
+    </div>
+    <div class="row">
+      <div class="grp"><div class="lbl">身高（計算BMI）</div><div class="wrap"><input type="number" id="wh" placeholder="165" min="100" max="250" inputmode="numeric"><span class="unit">cm</span></div></div>
+      <div class="grp" style="flex:2"><div class="lbl">日期時間</div><input type="datetime-local" id="wdt"></div>
+    </div>
+    <div class="row"><div class="grp"><div class="lbl">備註（選填）</div><textarea id="wn" placeholder="例：早起空腹量…"></textarea></div></div>
+    <button class="save-btn g" onclick="saveW()">儲存</button>
+  </div>
+  <div class="sec">歷史紀錄</div>
+  <div class="list" id="wl"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Storage ──────────────────────────────────────────────
+const K={g:'hlt_g',b:'hlt_b',w:'hlt_w',h:'hlt_h'};
+const get=k=>{try{return JSON.parse(localStorage.getItem(k)||'[]');}catch{return[];}};
+const set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+
+// ── Helpers ───────────────────────────────────────────────
+const nowLocal=()=>{const d=new Date();return d.toISOString().slice(0,16);};
+const fmtDT=s=>{const d=new Date(s);return`${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;};
+const toast=msg=>{const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);};
+
+// ── Service Worker ────────────────────────────────────────
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js').catch(e=>console.log('SW error:',e));
+  });
+}
+
+// ── Install guide ─────────────────────────────────────────
+function checkInstall(){
+  const isPWA=window.navigator.standalone===true||window.matchMedia('(display-mode:standalone)').matches;
+  const dismissed=localStorage.getItem('ig_dismissed');
+  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
+  if(isIOS&&!isPWA&&!dismissed) document.getElementById('install-guide').classList.remove('hidden');
+}
+function dismissGuide(){
+  localStorage.setItem('ig_dismissed','1');
+  document.getElementById('install-guide').classList.add('hidden');
+}
+
+// ── Tab switch ────────────────────────────────────────────
+let cur='g';
+function sw(tab){
+  cur=tab;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelector(`.tab[data-tab="${tab}"]`).classList.add('active');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('pg-'+tab).classList.add('active');
+  if(tab==='g')renderG();
+  if(tab==='b')renderB();
+  if(tab==='w')renderW();
+}
+
+// ── Pure canvas chart ─────────────────────────────────────
+function drawChart(canvasId,labels,datasets){
+  const canvas=document.getElementById(canvasId);
+  if(!canvas)return;
+  const dpr=window.devicePixelRatio||1;
+  const W=canvas.parentElement.clientWidth-28;
+  const H=120;
+  canvas.width=W*dpr;canvas.height=H*dpr;
+  canvas.style.width=W+'px';canvas.style.height=H+'px';
+  const ctx=canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+  const dark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+  const gridCol=dark?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)';
+  const textCol=dark?'#585854':'#a8a8a4';
+  const pad={t:8,r:12,b:28,l:36};
+  const cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;
+  if(!labels.length){
+    ctx.fillStyle=textCol;ctx.font='12px -apple-system,sans-serif';ctx.textAlign='center';
+    ctx.fillText('尚無資料',W/2,H/2);return;
+  }
+  let allVals=datasets.flatMap(d=>d.data.filter(v=>v!=null));
+  let mn=Math.min(...allVals),mx=Math.max(...allVals);
+  if(mn===mx){mn-=5;mx+=5;}
+  const range=mx-mn;mn=mn-range*0.1;mx=mx+range*0.1;
+  const yPx=v=>pad.t+ch-(((v-mn)/(mx-mn))*ch);
+  const xPx=i=>pad.l+(i/(Math.max(labels.length-1,1)))*cw;
+  const ticks=4;
+  ctx.strokeStyle=gridCol;ctx.lineWidth=0.5;
+  for(let i=0;i<=ticks;i++){
+    const y=pad.t+(i/ticks)*ch;
+    ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cw,y);ctx.stroke();
+    const val=(mx-(i/ticks)*(mx-mn)).toFixed(0);
+    ctx.fillStyle=textCol;ctx.font='10px -apple-system,sans-serif';ctx.textAlign='right';
+    ctx.fillText(val,pad.l-4,y+3);
+  }
+  ctx.fillStyle=textCol;ctx.font='10px -apple-system,sans-serif';ctx.textAlign='center';
+  const step=Math.ceil(labels.length/7);
+  labels.forEach((lbl,i)=>{if(i%step===0||i===labels.length-1)ctx.fillText(lbl,xPx(i),H-6);});
+  datasets.forEach(ds=>{
+    if(!ds.data.length)return;
+    ctx.strokeStyle=ds.color;ctx.lineWidth=2;
+    if(ds.dash)ctx.setLineDash(ds.dash);else ctx.setLineDash([]);
+    ctx.beginPath();
+    let started=false;
+    ds.data.forEach((v,i)=>{
+      if(v==null)return;
+      const x=xPx(i),y=yPx(v);
+      if(!started){ctx.moveTo(x,y);started=true;}else ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+    if(datasets.length===1){
+      ctx.globalAlpha=0.12;ctx.fillStyle=ds.color;
+      ctx.lineTo(xPx(ds.data.length-1),pad.t+ch);ctx.lineTo(xPx(0),pad.t+ch);
+      ctx.closePath();ctx.fill();ctx.globalAlpha=1;
+    }
+    ctx.setLineDash([]);
+    ds.data.forEach((v,i)=>{
+      if(v==null)return;
+      ctx.fillStyle=ds.color;ctx.beginPath();ctx.arc(xPx(i),yPx(v),3.5,0,Math.PI*2);ctx.fill();
+    });
+  });
+}
+
+// ── GLUCOSE ───────────────────────────────────────────────
+let gFilt='all';
+function gFilter(f,el){
+  gFilt=f;
+  document.querySelectorAll('#gf .fb').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');renderGList();
+}
+function gTag(v,t){
+  if(t==='空腹'||t==='飯前'){
+    if(v<70)return['偏低','tl'];if(v<=100)return['正常','tn'];if(v<=125)return['偏高','th'];return['過高','th'];
+  }
+  if(t==='飯後2H'){if(v<140)return['正常','tn'];if(v<200)return['偏高','th'];return['過高','th'];}
+  return null;
+}
+function saveG(){
+  const v=parseFloat(document.getElementById('gv').value);
+  if(!v||v<20||v>600){toast('請輸入有效血糖值');return;}
+  const arr=get(K.g);
+  arr.unshift({v,t:document.getElementById('gt').value,dt:document.getElementById('gdt').value||nowLocal(),
+    n:document.getElementById('gn').value.trim(),id:Date.now()});
+  set(K.g,arr);
+  document.getElementById('gv').value='';document.getElementById('gn').value='';
+  toast('✓ 已儲存');renderG();
+}
+function renderG(){
+  const arr=get(K.g);
+  const el=document.getElementById('gs');
+  if(!arr.length){el.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text3);font-size:13px;padding:8px 0">尚無資料</div>';}
+  else{
+    const vals=arr.map(r=>r.v);
+    const avg=(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1);
+    el.innerHTML=`
+      <div class="stat"><div class="stat-lbl">最新</div><div class="stat-val r">${arr[0].v}<span class="stat-unit"> mg/dL</span></div></div>
+      <div class="stat"><div class="stat-lbl">平均</div><div class="stat-val r">${avg}<span class="stat-unit"> mg/dL</span></div></div>
+      <div class="stat"><div class="stat-lbl">最低</div><div class="stat-val r">${Math.min(...vals)}<span class="stat-unit"> mg/dL</span></div></div>
+      <div class="stat"><div class="stat-lbl">最高</div><div class="stat-val r">${Math.max(...vals)}<span class="stat-unit"> mg/dL</span></div></div>`;
+  }
+  const sorted=[...arr].sort((a,b)=>new Date(a.dt)-new Date(b.dt));
+  const cut=new Date();cut.setDate(cut.getDate()-14);
+  const rec=sorted.filter(r=>new Date(r.dt)>=cut);
+  drawChart('gc',rec.map(r=>{const d=new Date(r.dt);return`${d.getMonth()+1}/${d.getDate()}`;}),
+    [{data:rec.map(r=>r.v),color:'#c0622a'}]);
+  renderGList();
+}
+function renderGList(){
+  const arr=get(K.g);
+  const data=gFilt==='all'?arr:arr.filter(r=>r.t===gFilt);
+  const el=document.getElementById('gl');
+  if(!data.length){el.innerHTML=`<div class="empty">尚無${gFilt==='all'?'':'「'+gFilt+'」的'}血糖紀錄</div>`;return;}
+  el.innerHTML=data.map(r=>{
+    const tg=gTag(r.v,r.t);
+    return`<div class="rec">
+      <div>
+        <div class="rv r">${r.v} <span style="font-size:11px;font-weight:400;color:var(--text3)">mg/dL</span> <span style="font-size:12px;color:var(--text2)">${r.t}</span></div>
+        ${tg?`<span class="tag ${tg[1]}">${tg[0]}</span>`:''}
+        ${r.n?`<div class="rn">${r.n}</div>`:''}
+      </div>
+      <div style="text-align:right;flex-shrink:0;margin-left:8px">
+        <div class="rt">${fmtDT(r.dt)}</div>
+        <button class="del" onclick="del('${K.g}',${r.id})">×</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── BLOOD PRESSURE ────────────────────────────────────────
+function bTag(s,d){
+  if(s<120&&d<80)return['正常','tn'];
+  if(s<130&&d<80)return['偏高','th'];
+  if(s>=180||d>=120)return['危險','th'];
+  return['高血壓','th'];
+}
+function saveB(){
+  const s=parseInt(document.getElementById('bsys').value);
+  const d=parseInt(document.getElementById('bdia').value);
+  if(!s||!d||s<60||d<40){toast('請輸入有效血壓值');return;}
+  const arr=get(K.b);
+  arr.unshift({s,d,hr:parseInt(document.getElementById('bhr').value)||null,
+    t:document.getElementById('bt').value,dt:document.getElementById('bdt').value||nowLocal(),
+    n:document.getElementById('bn').value.trim(),id:Date.now()});
+  set(K.b,arr);
+  ['bsys','bdia','bhr','bn'].forEach(id=>document.getElementById(id).value='');
+  toast('✓ 已儲存');renderB();
+}
+function renderB(){
+  const arr=get(K.b);
+  const el=document.getElementById('bs');
+  if(!arr.length){el.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text3);font-size:13px;padding:8px 0">尚無資料</div>';}
+  else{
+    const lat=arr[0];
+    const avgS=Math.round(arr.map(r=>r.s).reduce((a,b)=>a+b,0)/arr.length);
+    const avgD=Math.round(arr.map(r=>r.d).reduce((a,b)=>a+b,0)/arr.length);
+    const hrs=arr.filter(r=>r.hr).map(r=>r.hr);
+    const avgHr=hrs.length?Math.round(hrs.reduce((a,b)=>a+b,0)/hrs.length):'—';
+    el.innerHTML=`
+      <div class="stat"><div class="stat-lbl">最新收縮</div><div class="stat-val b">${lat.s}<span class="stat-unit"> mmHg</span></div></div>
+      <div class="stat"><div class="stat-lbl">最新舒張</div><div class="stat-val b">${lat.d}<span class="stat-unit"> mmHg</span></div></div>
+      <div class="stat"><div class="stat-lbl">平均收/舒</div><div class="stat-val b" style="font-size:16px">${avgS}/${avgD}</div></div>
+      <div class="stat"><div class="stat-lbl">平均心率</div><div class="stat-val b">${avgHr}${avgHr!=='—'?'<span class="stat-unit"> bpm</span>':''}</div></div>`;
+  }
+  const sorted=[...arr].sort((a,b)=>new Date(a.dt)-new Date(b.dt));
+  const cut=new Date();cut.setDate(cut.getDate()-14);
+  const rec=sorted.filter(r=>new Date(r.dt)>=cut);
+  drawChart('bc',rec.map(r=>{const d=new Date(r.dt);return`${d.getMonth()+1}/${d.getDate()}`;}),
+    [{data:rec.map(r=>r.s),color:'#2a6bc0'},{data:rec.map(r=>r.d),color:'#5aabdf',dash:[4,3]}]);
+  const listEl=document.getElementById('bl');
+  if(!arr.length){listEl.innerHTML='<div class="empty">尚無血壓紀錄</div>';return;}
+  listEl.innerHTML=arr.map(r=>{
+    const tg=bTag(r.s,r.d);
+    return`<div class="rec">
+      <div>
+        <div class="rv b">${r.s}/${r.d} <span style="font-size:11px;font-weight:400;color:var(--text3)">mmHg</span>${r.hr?` <span style="font-size:12px;color:var(--text2)">♥ ${r.hr}</span>`:''}</div>
+        <span class="tag ${tg[1]}">${tg[0]}</span> <span style="font-size:11px;color:var(--text3)">${r.t}</span>
+        ${r.n?`<div class="rn">${r.n}</div>`:''}
+      </div>
+      <div style="text-align:right;flex-shrink:0;margin-left:8px">
+        <div class="rt">${fmtDT(r.dt)}</div>
+        <button class="del" onclick="del('${K.b}',${r.id})">×</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── WEIGHT ────────────────────────────────────────────────
+function bmi(w,h){if(!h||h<100)return null;return(w/((h/100)**2)).toFixed(1);}
+function bmiTag(b){const v=parseFloat(b);
+  if(v<18.5)return['過輕','tl'];if(v<24)return['正常','tn'];if(v<27)return['過重','th'];return['肥胖','th'];}
+function saveW(){
+  const v=parseFloat(document.getElementById('wv').value);
+  if(!v||v<20||v>300){toast('請輸入有效體重');return;}
+  const h=parseFloat(document.getElementById('wh').value)||null;
+  if(h)localStorage.setItem(K.h,h);
+  const arr=get(K.w);
+  arr.unshift({v,f:parseFloat(document.getElementById('wf').value)||null,
+    h:h||parseFloat(localStorage.getItem(K.h))||null,
+    dt:document.getElementById('wdt').value||nowLocal(),
+    n:document.getElementById('wn').value.trim(),id:Date.now()});
+  set(K.w,arr);
+  ['wv','wf','wn'].forEach(id=>document.getElementById(id).value='');
+  toast('✓ 已儲存');renderW();
+}
+function renderW(){
+  const arr=get(K.w);
+  const el=document.getElementById('ws');
+  const savedH=parseFloat(localStorage.getItem(K.h));
+  if(!arr.length){el.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text3);font-size:13px;padding:8px 0">尚無資料</div>';}
+  else{
+    const lat=arr[0];
+    const b=bmi(lat.v,lat.h||savedH);
+    const diff=arr.length>=2?(lat.v-arr[1].v).toFixed(1):null;
+    const ds=diff?(parseFloat(diff)>0?`<span style="color:var(--red)">+${diff}</span>`:`<span style="color:var(--green)">${diff}</span>`):'—';
+    el.innerHTML=`
+      <div class="stat"><div class="stat-lbl">最新體重</div><div class="stat-val g">${lat.v}<span class="stat-unit"> kg</span></div>${lat.f?`<div style="font-size:11px;color:var(--text3)">體脂 ${lat.f}%</div>`:''}</div>
+      <div class="stat"><div class="stat-lbl">BMI</div><div class="stat-val g">${b||'—'}</div>${b?`<span class="tag ${bmiTag(b)[1]}" style="margin-top:4px">${bmiTag(b)[0]}</span>`:'<div style="font-size:11px;color:var(--text3);margin-top:4px">需輸入身高</div>'}</div>
+      <div class="stat"><div class="stat-lbl">與上次差異</div><div style="font-size:17px;font-weight:600">${ds}<span class="stat-unit"> kg</span></div></div>
+      <div class="stat"><div class="stat-lbl">筆數</div><div class="stat-val g">${arr.length}</div></div>`;
+  }
+  const sorted=[...arr].sort((a,b)=>new Date(a.dt)-new Date(b.dt));
+  const cut=new Date();cut.setDate(cut.getDate()-30);
+  const rec=sorted.filter(r=>new Date(r.dt)>=cut);
+  drawChart('wc',rec.map(r=>{const d=new Date(r.dt);return`${d.getMonth()+1}/${d.getDate()}`;}),
+    [{data:rec.map(r=>r.v),color:'#2a8c5a'}]);
+  const listEl=document.getElementById('wl');
+  if(!arr.length){listEl.innerHTML='<div class="empty">尚無體重紀錄</div>';return;}
+  listEl.innerHTML=arr.map((r,i)=>{
+    const b=bmi(r.v,r.h||savedH);
+    const next=arr[i+1];
+    const diff=next?(r.v-next.v).toFixed(1):null;
+    const ds=diff?(parseFloat(diff)>0?`<span style="color:var(--red)">+${diff}</span>`:`<span style="color:var(--green)">${diff}</span>`):'';
+    return`<div class="rec">
+      <div>
+        <div class="rv g">${r.v} <span style="font-size:11px;font-weight:400;color:var(--text3)">kg</span> ${ds}${r.f?` <span style="font-size:12px;color:var(--text2)">體脂 ${r.f}%</span>`:''}</div>
+        ${b?`<span class="tag ${bmiTag(b)[1]}">BMI ${b} ${bmiTag(b)[0]}</span>`:''}
+        ${r.n?`<div class="rn">${r.n}</div>`:''}
+      </div>
+      <div style="text-align:right;flex-shrink:0;margin-left:8px">
+        <div class="rt">${fmtDT(r.dt)}</div>
+        <button class="del" onclick="del('${K.w}',${r.id})">×</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Delete ────────────────────────────────────────────────
+function del(key,id){
+  set(key,get(key).filter(r=>r.id!==id));
+  if(key===K.g)renderG();
+  if(key===K.b)renderB();
+  if(key===K.w)renderW();
+}
+
+// ── Init ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  const d=new Date();
+  const wd=['日','一','二','三','四','五','六'][d.getDay()];
+  document.getElementById('todayDate').textContent=`${d.getMonth()+1}月${d.getDate()}日（${wd}）`;
+  ['gdt','bdt','wdt'].forEach(id=>document.getElementById(id).value=nowLocal());
+  const sh=localStorage.getItem(K.h);
+  if(sh)document.getElementById('wh').value=sh;
+  renderG();
+  checkInstall();
+  window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{
+    if(cur==='g')renderG();if(cur==='b')renderB();if(cur==='w')renderW();
+  });
+});
+</script>
+</body>
+</html>
