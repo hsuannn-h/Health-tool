@@ -1,8 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="114" fill="#2C2018"/>
-  <text x="256" y="280" font-size="200" text-anchor="middle" font-family="-apple-system,sans-serif">❤️</text>
-  <circle cx="176" cy="380" r="18" fill="#B5402A"/>
-  <circle cx="256" cy="380" r="18" fill="#2A5C7A"/>
-  <circle cx="336" cy="380" r="18" fill="#3A6A4A"/>
-  <text x="256" y="450" font-size="56" text-anchor="middle" font-family="-apple-system,Helvetica Neue,sans-serif" fill="#F5F0E8" font-weight="500" letter-spacing="2">健康紀錄</text>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1F4E79"/>
+      <stop offset="50%" style="stop-color:#C85A1A"/>
+      <stop offset="100%" style="stop-color:#A83060"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#C3A258;stop-opacity:0"/>
+      <stop offset="30%" style="stop-color:#C89B32;stop-opacity:1"/>
+      <stop offset="70%" style="stop-color:#B49E5A;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#C3A258;stop-opacity:0"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="114" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="114" fill="#1C1008" opacity="0.55"/>
+  <!-- 金線波浪裝飾 -->
+  <path d="M40,200 Q130,160 220,200 Q310,240 400,200 Q460,175 470,180" fill="none" stroke="url(#gold)" stroke-width="1.5" opacity="0.7"/>
+  <path d="M40,215 Q130,175 220,215 Q310,255 400,215 Q460,190 470,195" fill="none" stroke="url(#gold)" stroke-width="0.8" opacity="0.4"/>
+  <text x="256" y="288" font-size="188" text-anchor="middle" font-family="-apple-system,sans-serif">❤️</text>
+  <!-- 金線底部裝飾 -->
+  <line x1="80" y1="356" x2="432" y2="356" stroke="url(#gold)" stroke-width="1" opacity="0.6"/>
+  <circle cx="80" cy="356" r="3" fill="#C89B32" opacity="0.7"/>
+  <circle cx="432" cy="356" r="3" fill="#C89B32" opacity="0.7"/>
+  <text x="256" y="432" font-size="54" text-anchor="middle" font-family="-apple-system,Helvetica Neue,sans-serif" fill="#F4EEE4" font-weight="500" letter-spacing="3">健康紀錄</text>
 </svg>
