@@ -923,11 +923,11 @@ function renderGList(){
   if(!data.length){el.innerHTML=`<div class="empty">尚無${gFilt==='all'?'':'「'+gFilt+'」的'}血糖紀錄</div>`;return;}
   el.innerHTML=data.map(r=>{
     const tg=gTag(r.v,r.t);
-    const evHtml=r.evs&&r.evs.length?`<div class="ev-tags">${r.evs.map(e=>`<span class="ev-tag">${e}</span>`).join('')}</div>`:'';
+    const evHtml=r.evs&&r.evs.length?`<div class="ev-tags">${r.evs.map(e=>'<span class="ev-tag">'+e+'</span>').join('')}</div>`:'';
     return`<div class="rec"><div>
       <div class="rv">${r.v} <span style="font-size:.72em;font-weight:400;color:var(--text3)">mg/dL</span> <span style="font-size:.82em;color:var(--text2)">${r.t}</span></div>
-      ${tg?`<span class="tag ${tg[1]}">${tg[0]}</span>`:''}${evHtml}
-      ${r.n?`<div class="rn">${r.n}</div>`:''}
+      ${tg?'<span class="tag '+tg[1]+'">'+tg[0]+'</span>':''}${evHtml}
+      ${r.n?'<div class="rn">'+r.n+'</div>':''}
     </div><div style="text-align:right;flex-shrink:0;margin-left:8px">
       <div class="rt">${fmtDT(r.dt)}</div>
       <button class="del" onclick="del('g',${r.id})">×</button>
@@ -971,9 +971,9 @@ function renderB(){
   listEl.innerHTML=arr.map(r=>{
     const tg=bTag(r.s,r.d);
     return`<div class="rec"><div>
-      <div class="rv">${r.s}/${r.d} <span style="font-size:.72em;font-weight:400;color:var(--text3)">mmHg</span>${r.hr?` <span style="font-size:.82em;color:var(--text2)">♥${r.hr}</span>`:''}</div>
+      <div class="rv">${r.s}/${r.d} <span style="font-size:.72em;font-weight:400;color:var(--text3)">mmHg</span>${r.hr?'<span style="font-size:.82em;color:var(--text2)">♥'+r.hr+'</span>':''}</div>
       <span class="tag ${tg[1]}">${tg[0]}</span> <span style="font-size:.72em;color:var(--text3)">${r.t}</span>
-      ${r.n?`<div class="rn">${r.n}</div>`:''}
+      ${r.n?'<div class="rn">'+r.n+'</div>':''}
     </div><div style="text-align:right;flex-shrink:0;margin-left:8px">
       <div class="rt">${fmtDT(r.dt)}</div>
       <button class="del" onclick="del('b',${r.id})">×</button>
@@ -1005,8 +1005,8 @@ function renderW(){
     const diff=arr.length>=2?(lat.v-arr[1].v).toFixed(1):null;
     const ds=diff?`<div class="stat-diff" style="color:${parseFloat(diff)>0?'#c0392b':'#27ae60'}">${parseFloat(diff)>0?'▲':'▼'}${Math.abs(diff)} kg</div>`:'';
     el.innerHTML=`
-      <div class="stat"><div class="stat-lbl">最新體重</div><div class="stat-val">${lat.v}<span class="stat-unit"> kg</span></div>${lat.f?`<div class="stat-diff" style="color:var(--text3)">體脂 ${lat.f}%</div>`:''}${ds}</div>
-      <div class="stat"><div class="stat-lbl">BMI</div><div class="stat-val">${b||'—'}</div>${b?`<span class="tag ${bmiTag(b)[1]}">${bmiTag(b)[0]}</span>`:'<div style="font-size:.72em;color:var(--text3);margin-top:4px">需輸入身高</div>'}</div>`;
+      <div class="stat"><div class="stat-lbl">最新體重</div><div class="stat-val">${lat.v}<span class="stat-unit"> kg</span></div>${lat.f?'<div class="stat-diff" style="color:var(--text3)">體脂 '+lat.f+'%</div>':''}${ds}</div>
+      <div class="stat"><div class="stat-lbl">BMI</div><div class="stat-val">${b||'—'}</div>${b?'<span class="tag '+bmiTag(b)[1]+'">'+bmiTag(b)[0]+'</span>':'<div style="font-size:.72em;color:var(--text3);margin-top:4px">需輸入身高</div>'}</div>`;
   }
   const rec=recent(arr,wPeriod);
   drawChart('wc',rec.map(r=>fmtDate(r.dt)),[{data:rec.map(r=>r.v),color:getAccColor(),showMA:true}]);
@@ -1018,9 +1018,9 @@ function renderW(){
     const diff=next?(r.v-next.v).toFixed(1):null;
     const ds=diff?(parseFloat(diff)>0?`<span style="color:#c0392b">+${diff}</span>`:`<span style="color:#27ae60">${diff}</span>`):'';
     return`<div class="rec"><div>
-      <div class="rv">${r.v} <span style="font-size:.72em;font-weight:400;color:var(--text3)">kg</span> ${ds}${r.f?` <span style="font-size:.82em;color:var(--text2)">體脂${r.f}%</span>`:''}</div>
-      ${b?`<span class="tag ${bmiTag(b)[1]}">BMI ${b} ${bmiTag(b)[0]}</span>`:''}
-      ${r.n?`<div class="rn">${r.n}</div>`:''}
+      <div class="rv">${r.v} <span style="font-size:.72em;font-weight:400;color:var(--text3)">kg</span> ${ds}${r.f?' <span style="font-size:.82em;color:var(--text2)">體脂'+r.f+'%</span>':''}</div>
+      ${b?'<span class="tag '+bmiTag(b)[1]+'">BMI '+b+' '+bmiTag(b)[0]+'</span>':''}
+      ${r.n?'<div class="rn">'+r.n+'</div>':''}
     </div><div style="text-align:right;flex-shrink:0;margin-left:8px">
       <div class="rt">${fmtDT(r.dt)}</div>
       <button class="del" onclick="del('w',${r.id})">×</button>
@@ -1073,7 +1073,7 @@ function renderSleep(){
     const h=sleepH(r.bed,r.wake);
     return`<div class="rec"><div>
       <div class="rv">${r.bed} → ${r.wake} <span style="font-size:.82em;font-weight:400;color:var(--text3)">${h?h+'hr':''}</span></div>
-      ${r.n?`<div class="rn">${r.n}</div>`:''}
+      ${r.n?'<div class="rn">'+r.n+'</div>':''}
     </div><div style="text-align:right;flex-shrink:0;margin-left:8px">
       <div class="rt">${fmtDT(r.dt)}</div>
       <button class="del" onclick="del('s',${r.id})">×</button>
@@ -1097,9 +1097,9 @@ function renderSleepInsight(){
   const la=late.length?avg(late).toFixed(1):null,na=normal.length?avg(normal).toFixed(1):null;
   const diff=la&&na?(parseFloat(la)-parseFloat(na)).toFixed(1):null;
   iEl.innerHTML=`<div class="insight-title">😴 睡眠 × 空腹血糖關聯</div>
-    ${na?`<div class="insight-row"><span style="font-size:.82em;color:var(--text2)">一般就寢（23:00前）</span><span style="font-size:.9em;font-weight:700;color:#27ae60">${na} mg/dL</span></div>`:''}
-    ${la?`<div class="insight-row"><span style="font-size:.82em;color:var(--text2)">晚睡（凌晨1點後）</span><span style="font-size:.9em;font-weight:700;color:#c0392b">${la} mg/dL</span></div>`:''}
-    ${diff?`<div class="insight-row"><span style="font-size:.82em;color:var(--text2)">晚睡影響</span><span style="font-size:.9em;font-weight:700;color:${parseFloat(diff)>0?'#c0392b':'#27ae60'}">${parseFloat(diff)>0?'▲':'▼'}${Math.abs(diff)} mg/dL</span></div>`:''}
+    ${na?'<div class="insight-row"><span style="font-size:.82em;color:var(--text2)">一般就寢（23:00前）</span><span style="font-size:.9em;font-weight:700;color:#27ae60">'+na+' mg/dL</span></div>':''}
+    ${la?'<div class="insight-row"><span style="font-size:.82em;color:var(--text2)">晚睡（凌晨1點後）</span><span style="font-size:.9em;font-weight:700;color:#c0392b">'+la+' mg/dL</span></div>':''}
+    ${diff?'<div class="insight-row"><span style="font-size:.82em;color:var(--text2)">晚睡影響</span><span style="font-size:.9em;font-weight:700;color:'+(parseFloat(diff)>0?'#c0392b':'#27ae60')+'">'+(parseFloat(diff)>0?'▲':'▼')+Math.abs(diff)+' mg/dL</span></div>':''}
     <div style="font-size:.68em;color:var(--text3);margin-top:8px">基於已配對的睡眠與隔日空腹血糖，僅供個人參考。</div>`;
 }
 
@@ -1117,9 +1117,9 @@ function renderSummary(){
   el.innerHTML='<div style="height:14px;"></div>'+sorted.map(([date,data])=>{
     const d=new Date(date);const wd=['日','一','二','三','四','五','六'][d.getDay()];
     const rows=[];
-    if(data.g) data.g.forEach(g=>{const tg=gTag(g.v,g.t);rows.push(`<div class="sum-row"><span class="sum-key">血糖 ${g.t}</span><span class="sum-val">${g.v} mg/dL${tg?` <span class="tag ${tg[1]}" style="font-size:.65em;padding:1px 6px">${tg[0]}</span>':''}</span></div>`);});
-    if(data.b) data.b.forEach(b=>{rows.push(`<div class="sum-row"><span class="sum-key">血壓 ${b.t}</span><span class="sum-val">${b.s}/${b.d} mmHg${b.hr?` ♥${b.hr}`:''}</span></div>`);});
-    if(data.w) data.w.forEach(w=>{rows.push(`<div class="sum-row"><span class="sum-key">體重</span><span class="sum-val">${w.v} kg${w.f?` 體脂${w.f}%`:''}</span></div>`);});
+    if(data.g) data.g.forEach(g=>{const tg=gTag(g.v,g.t);rows.push('<div class="sum-row"><span class="sum-key">血糖 '+g.t+'</span><span class="sum-val">'+g.v+' mg/dL'+(tg?' <span class="tag '+tg[1]+'" style="font-size:.65em;padding:1px 6px">'+tg[0]+'</span>':'')+'</span></div>');}));
+    if(data.b) data.b.forEach(b=>{rows.push(`<div class="sum-row"><span class="sum-key">血壓 ${b.t}</span><span class="sum-val">${b.s}/${b.d} mmHg${b.hr?' ♥'+b.hr:''}</span></div>`);});
+    if(data.w) data.w.forEach(w=>{rows.push(`<div class="sum-row"><span class="sum-key">體重</span><span class="sum-val">${w.v} kg${w.f?' 體脂'+w.f+'%':''}</span></div>`);});
     if(data.s) data.s.forEach(s=>{const h=sleepH(s.bed,s.wake);rows.push(`<div class="sum-row"><span class="sum-key">睡眠</span><span class="sum-val">${s.bed}→${s.wake}${h?' '+h+'hr':''}</span></div>`);});
     return`<div class="sum-card"><div class="sum-date">${d.getMonth()+1}月${d.getDate()}日（${wd}）</div>${rows.join('')}</div>`;
   }).join('');
