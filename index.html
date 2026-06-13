@@ -635,10 +635,15 @@ function renderPersonBar(){
   const users=getUsers();
   const cur=getCurUser();
   const bar=document.getElementById('person-bar');
-  let html=users.map(u=>`<button class="person-btn${u.id===cur?' active':''}" onclick="switchUser('${u.id}')">${u.name}</button>`).join('');
-  if(users.length<3) html+=`<button class="person-btn empty" onclick="openSettings()">＋ 新增</button>`;
+  let html=users.map(u=>'<button class="person-btn'+(u.id===cur?' active':'')+'" data-uid="'+u.id+'">'+u.name+'</button>').join('');
+  if(users.length<3) html+='<button class="person-btn empty" id="person-add-btn">＋ 新增</button>';
   bar.innerHTML=html;
   bar.style.display=users.length>1?'flex':'none';
+  bar.querySelectorAll('.person-btn[data-uid]').forEach(function(btn){
+    btn.addEventListener('click',function(){switchUser(btn.dataset.uid);});
+  });
+  var addBtn=document.getElementById('person-add-btn');
+  if(addBtn) addBtn.addEventListener('click',openSettings);
 }
 function switchUser(id){
   setCurUser(id);
@@ -656,30 +661,42 @@ function openSettings(){
   document.getElementById('modal-settings').classList.add('open');
 }
 function renderUserSettings(){
-  const users=getUsers();
-  const cur=getCurUser();
-  let html='';
-  users.forEach((u,i)=>{
-    const takenThemes=users.filter((_,j)=>j!==i).map(x=>x.theme);
-    const themeOpts=THEME_KEYS.map(tk=>{
-      const th=THEMES[tk];
-      const disabled=takenThemes.includes(tk)&&u.theme!==tk;
-      return`<div class="theme-opt${u.theme===tk?' selected':''} ${disabled?'disabled':''}" onclick="${disabled?'':'setUserTheme(\''+u.id+'\',\''+tk+'\')'}" style="${disabled?'opacity:.35;cursor:not-allowed':''}">
-        <div class="theme-dot" style="background:${th.dot}"></div>
-        <div class="theme-name">${th.name}</div>
-      </div>`;
+  var users=getUsers();
+  var html='';
+  users.forEach(function(u,i){
+    var takenThemes=users.filter(function(_,j){return j!==i;}).map(function(x){return x.theme;});
+    var themeOpts=THEME_KEYS.map(function(tk){
+      var th=THEMES[tk];
+      var taken=takenThemes.includes(tk)&&u.theme!==tk;
+      var sel=u.theme===tk;
+      return '<div class="theme-opt'+(sel?' selected':'')+'" data-uid="'+u.id+'" data-tk="'+tk+'"'+(taken?' style="opacity:.35;pointer-events:none"':'')+'>'
+        +'<div class="theme-dot" style="background:'+th.dot+'"></div>'
+        +'<div class="theme-name">'+th.name+'</div>'
+        +'</div>';
     }).join('');
-    html+=`<div style="background:var(--surface2);border-radius:var(--rsm);padding:12px;margin-bottom:10px;border:.5px solid var(--border2);">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-        <input type="text" value="${u.name}" maxlength="6" style="font-size:.95em;font-weight:600;width:80px;padding:6px 8px;" onchange="renameUser('${u.id}',this.value)" placeholder="名稱">
-        ${users.length>1?`<button onclick="removeUser('${u.id}')" style="margin-left:auto;background:none;border:none;color:var(--text3);font-size:.82em;cursor:pointer;">刪除</button>`:''}
-      </div>
-      <div class="theme-opts">${themeOpts}</div>
-    </div>`;
+    var delBtn=users.length>1?'<button data-del="'+u.id+'" style="margin-left:auto;background:none;border:none;color:var(--text3);font-size:.82em;cursor:pointer;">刪除</button>':'';
+    html+='<div style="background:var(--surface2);border-radius:var(--rsm);padding:12px;margin-bottom:10px;border:.5px solid var(--border2);">'
+      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">'
+      +'<input type="text" value="'+u.name+'" maxlength="6" data-rename="'+u.id+'" style="font-size:.95em;font-weight:600;width:80px;padding:6px 8px;" placeholder="名稱">'
+      +delBtn
+      +'</div>'
+      +'<div class="theme-opts">'+themeOpts+'</div>'
+      +'</div>';
   });
   document.getElementById('user-settings').innerHTML=html;
-  const addArea=document.getElementById('add-user-area');
-  addArea.innerHTML=users.length<3?`<button onclick="addUser()" style="width:100%;padding:10px;border-radius:var(--rsm);border:1.5px dashed var(--border2);background:transparent;color:var(--text2);font-size:.88em;cursor:pointer;">＋ 新增使用者</button>`:'';
+  document.querySelectorAll('.theme-opt[data-uid]').forEach(function(el){
+    el.addEventListener('click',function(){setUserTheme(el.dataset.uid,el.dataset.tk);});
+  });
+  document.querySelectorAll('input[data-rename]').forEach(function(el){
+    el.addEventListener('change',function(){renameUser(el.dataset.rename,el.value);});
+  });
+  document.querySelectorAll('button[data-del]').forEach(function(el){
+    el.addEventListener('click',function(){removeUser(el.dataset.del);});
+  });
+  var addArea=document.getElementById('add-user-area');
+  addArea.innerHTML=users.length<3?'<button id="add-user-btn" style="width:100%;padding:10px;border-radius:var(--rsm);border:1.5px dashed var(--border2);background:transparent;color:var(--text2);font-size:.88em;cursor:pointer;">＋ 新增使用者</button>':'';
+  var addBtn=document.getElementById('add-user-btn');
+  if(addBtn) addBtn.addEventListener('click',addUser);
 }
 function setUserTheme(uid,theme){
   const users=getUsers();
