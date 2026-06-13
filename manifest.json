@@ -4,8 +4,8 @@
   "description": "血糖、血壓、體重紀錄工具",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f7f6f3",
-  "theme_color": "#f7f6f3",
+  "background_color": "#F5F0E8",
+  "theme_color": "#2C2018",
   "orientation": "portrait",
   "icons": [
     {
