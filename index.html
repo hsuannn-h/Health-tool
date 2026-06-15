@@ -122,7 +122,7 @@ body.theme-utamaro {
 /* ── 深色模式 ──────────────────────────── */
 @media (prefers-color-scheme: dark) {
   body.theme-hokusai {
-    --bg: rgba(14,21,32,0.0); --surface: #162030; --surface2: #1E2C40;
+    --bg: #0E1520; --surface: #162030; --surface2: #1E2C40;
     --border: rgba(74,128,184,0.10); --border2: rgba(74,128,184,0.22);
     --text: #C8D8E8; --text2: #6A88A8; --text3: #364E66;
     --acc: #4A88C8; --acc2: #2A5898;
@@ -130,7 +130,7 @@ body.theme-utamaro {
     --gold: rgba(180,158,90,0.40); --gold-solid: #B49E5A; --gold-light: rgba(180,158,90,0.10);
   }
   body.theme-hiroshige {
-    --bg: rgba(28,18,8,0.0); --surface: #261A0E; --surface2: #302214;
+    --bg: #1C1208; --surface: #261A0E; --surface2: #302214;
     --border: rgba(220,120,50,0.10); --border2: rgba(220,120,50,0.22);
     --text: #ECD8C0; --text2: #A07848; --text3: #5A3C22;
     --acc: #E87828; --acc2: #A85010;
@@ -138,7 +138,7 @@ body.theme-utamaro {
     --gold: rgba(200,155,50,0.40); --gold-solid: #C89B32; --gold-light: rgba(200,155,50,0.10);
   }
   body.theme-utamaro {
-    --bg: rgba(22,10,20,0.0); --surface: #201020; --surface2: #2A182A;
+    --bg: #160A14; --surface: #201020; --surface2: #2A182A;
     --border: rgba(190,100,160,0.10); --border2: rgba(190,100,160,0.22);
     --text: #ECD8E8; --text2: #A06888; --text3: #5A3450;
     --acc: #D05888; --acc2: #901848;
@@ -867,8 +867,7 @@ textarea { resize: none; height: 52px; font-size: .88em; }
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  }
+
 
 /* ── 背景：日式和柄 ── */
 html {
@@ -881,16 +880,12 @@ html {
 @media (prefers-color-scheme: dark) {
   html {
     background-color: #1A1610;
-    filter: brightness(0.6) saturate(0.8);
   }
 }
 body {
   background-color: transparent;
 }
-@media (prefers-color-scheme: dark) {
-  html, body { background-color: #1A1510; }
-  
-}
+
 </style>
 </head>
 <body class="theme-hiroshige">
