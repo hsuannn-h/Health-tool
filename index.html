@@ -13,6 +13,7 @@
 /* ── 和紙底色 ── */
 :root {
   --bg: #F0EBE0;
+  --text-on-dark: rgba(255,255,255,0.92);
   --surface: #FBF8F3;
   --surface2: #EAE5DA;
   --border: rgba(60,40,20,0.09);
@@ -26,6 +27,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --bg: #1C1814;
+    --text-on-dark: rgba(255,255,255,0.95);
     --surface: #252018;
     --surface2: #302820;
     --border: rgba(255,220,180,0.08);
@@ -217,7 +219,7 @@ html, body { height: 100%; overscroll-behavior: none; }
   color: var(--text2); cursor: pointer; padding: 2px 6px;
 }
 .modal-sec-title {
-  font-size: .7em; font-weight: 600; color: var(--text3);
+  font-size: .7em; font-weight: 600; color: var(--text2);
   letter-spacing: 1px; text-transform: uppercase;
   margin-bottom: 10px; padding-bottom: 6px;
   border-bottom: .5px solid var(--border);
@@ -295,7 +297,7 @@ html, body { height: 100%; overscroll-behavior: none; }
   width: 100%; height: 180px;
   font-family: monospace; font-size: .72em; line-height: 1.6;
   padding: 10px; border: .5px solid var(--border2); border-radius: var(--rs);
-  background: var(--surface2); color: var(--text); resize: none;
+  background: rgba(255,255,255,0.75); color: var(--text); resize: none;
 }
 .data-err { font-size: .75em; color: #c0392b; min-height: 16px; margin-top: 4px; }
 .btn-row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; }
@@ -344,7 +346,7 @@ html, body { height: 100%; overscroll-behavior: none; }
   padding: 50px 16px 12px;
   display: flex; align-items: flex-end; justify-content: space-between;
   border-bottom: 1px solid var(--gold,rgba(180,158,90,0.3));
-  background: rgba(255,255,255,0.75);
+  background: rgba(255,255,255,0.82);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
@@ -359,7 +361,7 @@ html, body { height: 100%; overscroll-behavior: none; }
   flex: 1; padding: 8px 0;
   border-radius: var(--rs); border: none;
   font-size: .75em; font-weight: 600; cursor: pointer;
-  background: var(--surface2); color: var(--text3);
+  background: var(--surface2); color: var(--text-on-dark);
   transition: all .2s; letter-spacing: .3px;
 }
 .tab-btn.active {
@@ -378,7 +380,7 @@ html, body { height: 100%; overscroll-behavior: none; }
   border-radius: var(--rs); padding: 12px 11px;
   box-shadow: 0 1px 3px rgba(60,40,20,.04);
 }
-.stat-lbl { font-size: .68em; color: var(--text3); margin-bottom: 3px; }
+.stat-lbl { font-size: .68em; color: var(--text2); margin-bottom: 3px; }
 .stat-val { font-size: 1.2em; font-weight: 700; color: var(--col-a, var(--acc)); letter-spacing: -.3px; }
 .stat-unit { font-size: .68em; color: var(--text3); font-weight: 400; }
 .stat-sub { font-size: .72em; margin-top: 3px; }
@@ -389,15 +391,17 @@ html, body { height: 100%; overscroll-behavior: none; }
   border-radius: var(--r); padding: 14px; margin-bottom: 14px;
   box-shadow: 0 1px 4px rgba(60,40,20,.04);
 }
-.chart-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-.chart-title { font-size: .78em; color: var(--text2); font-weight: 500; }
-.chart-periods { display: flex; gap: 4px; }
+.chart-hd { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.chart-title { font-size: .78em; color: var(--text); font-weight: 600; letter-spacing: .3px; }
+.chart-periods { display: flex; gap: 6px; flex-wrap: nowrap; }
 .period-btn {
-  padding: 3px 10px; border-radius: 20px;
+  min-width: 52px;
+  padding: 6px 12px; border-radius: 20px;
   border: .5px solid var(--border2);
-  background: var(--surface2); color: var(--text2); font-size: .72em; cursor: pointer;
+  background: var(--surface2); color: var(--text-on-dark); font-size: .75em; cursor: pointer;
+  font-weight: 600; text-align: center;
 }
-.period-btn.on { background: var(--acc); color: #fff; border-color: var(--acc); }
+.period-btn.on { background: var(--acc); color: #fff; border-color: var(--acc); font-weight: 600; }
 canvas { display: block; width: 100% !important; }
 
 /* ── HbA1c ── */
@@ -420,14 +424,14 @@ canvas { display: block; width: 100% !important; }
   box-shadow: 0 1px 4px rgba(60,40,20,.04);
 }
 .card-title {
-  font-size: .7em; font-weight: 600; color: var(--text3);
+  font-size: .7em; font-weight: 600; color: var(--text2);
   letter-spacing: 1.2px; text-transform: uppercase;
   margin-bottom: 14px; padding-bottom: 8px;
   border-bottom: .5px solid var(--border);
 }
 .frow { display: flex; gap: 8px; margin-bottom: 10px; }
 .fgrp { flex: 1; }
-.flbl { font-size: .75em; color: var(--text3); margin-bottom: 4px; }
+.flbl { font-size: .75em; color: var(--text2); margin-bottom: 4px; }
 .fwrap { position: relative; }
 .funit {
   position: absolute; right: 11px; top: 50%; transform: translateY(-50%);
@@ -440,7 +444,7 @@ input[type="text"],
 select, textarea {
   width: 100%; padding: 11px 12px;
   border-radius: var(--rs); border: .5px solid var(--border2);
-  background: var(--surface2); color: var(--text);
+  background: rgba(255,255,255,0.75); color: var(--text);
   font-family: inherit; font-size: 1em;
   outline: none; -webkit-appearance: none; appearance: none;
 }
@@ -461,9 +465,9 @@ textarea { resize: none; height: 52px; font-size: .88em; }
 }
 .save-btn:active { opacity: .82; transform: scale(.99); }
 .ref-note {
-  font-size: .7em; color: var(--text3); margin-top: 10px;
+  font-size: .7em; color: var(--text); margin-top: 10px;
   line-height: 1.8; padding: 7px 10px;
-  background: var(--surface2); border-radius: var(--rs);
+  background: rgba(255,255,255,0.82); border-radius: var(--rs);
   border-left: 2px solid var(--border2);
 }
 
@@ -472,8 +476,9 @@ textarea { resize: none; height: 52px; font-size: .88em; }
 .ev-btn {
   padding: 6px 12px; border-radius: 20px;
   border: .5px solid var(--border2);
-  background: var(--surface2); color: var(--text2);
+  background: var(--surface2); color: var(--text-on-dark);
   font-size: .82em; cursor: pointer; transition: all .15s;
+  font-weight: 500;
 }
 .ev-btn.on {
   background: var(--acc); color: #fff; border-color: var(--acc);
@@ -489,13 +494,14 @@ textarea { resize: none; height: 52px; font-size: .88em; }
 .filter-btn {
   flex-shrink: 0; padding: 6px 14px; border-radius: 20px;
   border: .5px solid var(--border2);
-  background: var(--surface); color: var(--text2); font-size: .82em; cursor: pointer;
+  background: var(--surface2); color: var(--text-on-dark); font-size: .82em; cursor: pointer;
+  font-weight: 500;
 }
 .filter-btn.on { background: var(--col-a, var(--acc)); color: #fff; border-color: var(--col-a, var(--acc)); }
 
 /* ── Section title ── */
 .sec-title {
-  font-size: .7em; font-weight: 600; color: var(--text3);
+  font-size: .7em; font-weight: 600; color: var(--text2);
   letter-spacing: 1.4px; text-transform: uppercase;
   margin-bottom: 10px; padding-bottom: 8px;
   border-bottom: .5px solid var(--border);
@@ -615,7 +621,7 @@ textarea { resize: none; height: 52px; font-size: .88em; }
   border-radius: 0 var(--r) var(--r) 0;
   padding: 16px; margin-bottom: 14px;
 }
-.insight-title { font-size: .78em; font-weight: 600; color: var(--text2); margin-bottom: 10px; }
+.insight-title { font-size: .78em; font-weight: 600; color: var(--text); margin-bottom: 10px; }
 .insight-row {
   display: flex; justify-content: space-between; align-items: center;
   padding: 7px 0; border-bottom: .5px solid var(--border);
@@ -639,8 +645,8 @@ textarea { resize: none; height: 52px; font-size: .88em; }
 .bottom-btn {
   flex: 1; padding: 9px 6px;
   border-radius: var(--rs); border: .5px solid var(--border2);
-  background: var(--bg); color: var(--text2);
-  font-size: .78em; cursor: pointer; text-align: center; letter-spacing: .3px;
+  background: rgba(255,255,255,0.85); color: var(--text);
+  font-size: .78em; font-weight: 600; cursor: pointer; text-align: center; letter-spacing: .3px;
 }
 .bottom-btn:active { background: var(--surface2); }
 
@@ -836,11 +842,11 @@ html {
 <div class="page" id="page-summary">
   <div style="height:14px"></div>
   <!-- 事件影響分析 -->
-  <div style="background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px;box-shadow:0 1px 4px rgba(60,40,20,.04);">
+  <div style="background:rgba(255,255,255,0.92);border:.5px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px;box-shadow:0 1px 4px rgba(60,40,20,.06);">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--gold,rgba(180,158,90,0.25));">
       <div style="width:3px;height:11px;background:var(--gold-solid,var(--acc));border-radius:2px;flex-shrink:0;"></div>
-      <div style="font-size:.7em;font-weight:600;color:var(--text3);letter-spacing:1.2px;text-transform:uppercase;">事件影響分析</div>
-      <div style="font-size:.68em;color:var(--text3);margin-left:auto;">依血糖差異排序</div>
+      <div style="font-size:.7em;font-weight:600;color:var(--text);letter-spacing:1.2px;text-transform:uppercase;">事件影響分析</div>
+      <div style="font-size:.68em;color:var(--text2);margin-left:auto;">依血糖差異排序</div>
     </div>
     <div id="event-analysis-wrap"></div>
   </div>
@@ -864,9 +870,9 @@ html {
     <div class="chart-hd">
       <div class="chart-title">血糖趨勢</div>
       <div class="chart-periods">
-        <button class="period-btn on" data-days="30">30日</button>
+        <button class="period-btn on" data-days="14">14日</button>
+        <button class="period-btn" data-days="30">30日</button>
         <button class="period-btn" data-days="90">90日</button>
-        <button class="period-btn" data-days="9999">歷史</button>
         <button class="period-btn" data-days="9999">歷史</button>
       </div>
     </div>
@@ -934,9 +940,9 @@ html {
     <div class="chart-hd">
       <div class="chart-title">血壓趨勢（實線收縮／虛線舒張）</div>
       <div class="chart-periods">
-        <button class="period-btn on" data-days="30">30日</button>
+        <button class="period-btn on" data-days="14">14日</button>
+        <button class="period-btn" data-days="30">30日</button>
         <button class="period-btn" data-days="90">90日</button>
-        <button class="period-btn" data-days="9999">歷史</button>
         <button class="period-btn" data-days="9999">歷史</button>
       </div>
     </div>
@@ -1573,7 +1579,7 @@ function renderAll() { showPage(curPage); }
 // ════════════════════════════════════════
 // GLUCOSE
 // ════════════════════════════════════════
-var gPeriod = 30;
+var gPeriod = 14;
 var gFilter = 'all';
 
 function gTag(v, t) {
@@ -1712,7 +1718,7 @@ function renderGlucoseList() {
 // ════════════════════════════════════════
 // BLOOD PRESSURE
 // ════════════════════════════════════════
-var bPeriod = 30;
+var bPeriod = 14;
 
 function bTag(s, d) {
   if (s < 120 && d < 80) return ['正常', 'stag-ok'];
