@@ -297,7 +297,7 @@ html, body { height: 100%; overscroll-behavior: none; }
   width: 100%; height: 180px;
   font-family: monospace; font-size: .72em; line-height: 1.6;
   padding: 10px; border: .5px solid var(--border2); border-radius: var(--rs);
-  background: rgba(255,255,255,0.75); color: var(--text); resize: none;
+  background: var(--surface2); color: var(--text); resize: none;
 }
 .data-err { font-size: .75em; color: #c0392b; min-height: 16px; margin-top: 4px; }
 .btn-row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; }
@@ -424,7 +424,7 @@ canvas { display: block; width: 100% !important; }
   box-shadow: 0 1px 4px rgba(60,40,20,.04);
 }
 .card-title {
-  font-size: .7em; font-weight: 600; color: var(--text2);
+  font-size: .7em; font-weight: 600; color: var(--text-on-dark);
   letter-spacing: 1.2px; text-transform: uppercase;
   margin-bottom: 14px; padding-bottom: 8px;
   border-bottom: .5px solid var(--border);
@@ -444,7 +444,7 @@ input[type="text"],
 select, textarea {
   width: 100%; padding: 11px 12px;
   border-radius: var(--rs); border: .5px solid var(--border2);
-  background: rgba(255,255,255,0.75); color: var(--text);
+  background: var(--surface2); color: var(--text);
   font-family: inherit; font-size: 1em;
   outline: none; -webkit-appearance: none; appearance: none;
 }
@@ -465,9 +465,9 @@ textarea { resize: none; height: 52px; font-size: .88em; }
 }
 .save-btn:active { opacity: .82; transform: scale(.99); }
 .ref-note {
-  font-size: .7em; color: var(--text); margin-top: 10px;
+  font-size: .7em; color: var(--text-on-dark); margin-top: 10px;
   line-height: 1.8; padding: 7px 10px;
-  background: rgba(255,255,255,0.82); border-radius: var(--rs);
+  background: var(--surface2); border-radius: var(--rs);
   border-left: 2px solid var(--border2);
 }
 
@@ -501,7 +501,7 @@ textarea { resize: none; height: 52px; font-size: .88em; }
 
 /* ── Section title ── */
 .sec-title {
-  font-size: .7em; font-weight: 600; color: var(--text2);
+  font-size: .7em; font-weight: 600; color: var(--text-on-dark);
   letter-spacing: 1.4px; text-transform: uppercase;
   margin-bottom: 10px; padding-bottom: 8px;
   border-bottom: .5px solid var(--border);
@@ -842,11 +842,11 @@ html {
 <div class="page" id="page-summary">
   <div style="height:14px"></div>
   <!-- 事件影響分析 -->
-  <div style="background:rgba(255,255,255,0.92);border:.5px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px;box-shadow:0 1px 4px rgba(60,40,20,.06);">
+  <div style="background:var(--surface2);border:.5px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px;box-shadow:0 1px 4px rgba(60,40,20,.04);">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--gold,rgba(180,158,90,0.25));">
       <div style="width:3px;height:11px;background:var(--gold-solid,var(--acc));border-radius:2px;flex-shrink:0;"></div>
-      <div style="font-size:.7em;font-weight:600;color:var(--text);letter-spacing:1.2px;text-transform:uppercase;">事件影響分析</div>
-      <div style="font-size:.68em;color:var(--text2);margin-left:auto;">依血糖差異排序</div>
+      <div style="font-size:.7em;font-weight:600;color:var(--text-on-dark);letter-spacing:1.2px;text-transform:uppercase;">事件影響分析</div>
+      <div style="font-size:.68em;color:var(--text-on-dark);margin-left:auto;">依血糖差異排序</div>
     </div>
     <div id="event-analysis-wrap"></div>
   </div>
@@ -2111,9 +2111,9 @@ function renderEventAnalysis() {
     html += '</div>';
     // 數值行
     html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;">';
-    html += '<div><div style="font-size:.65em;color:var(--text3);margin-bottom:2px">有標記平均</div><div style="font-size:.95em;font-weight:600;color:var(--acc)">' + r.avgWith + '<span style="font-size:.7em;font-weight:400"> mg/dL</span></div></div>';
-    html += '<div><div style="font-size:.65em;color:var(--text3);margin-bottom:2px">無標記平均</div><div style="font-size:.95em;font-weight:600;color:var(--text2)">' + r.avgWithout + '<span style="font-size:.7em;font-weight:400"> mg/dL</span></div></div>';
-    html += '<div><div style="font-size:.65em;color:var(--text3);margin-bottom:2px">影響差異</div><div style="font-size:.95em;font-weight:700;color:' + deltaCol + '">' + arrow + ' ' + Math.abs(r.delta) + '<span style="font-size:.7em;font-weight:400"> mg/dL</span></div></div>';
+    html += '<div><div style="font-size:.65em;color:var(--text-on-dark);margin-bottom:2px">有標記平均</div><div style="font-size:.95em;font-weight:600;color:var(--acc)">' + r.avgWith + '<span style="font-size:.7em;font-weight:400"> mg/dL</span></div></div>';
+    html += '<div><div style="font-size:.65em;color:var(--text-on-dark);margin-bottom:2px">無標記平均</div><div style="font-size:.95em;font-weight:600;color:var(--text2)">' + r.avgWithout + '<span style="font-size:.7em;font-weight:400"> mg/dL</span></div></div>';
+    html += '<div><div style="font-size:.65em;color:var(--text-on-dark);margin-bottom:2px">影響差異</div><div style="font-size:.95em;font-weight:700;color:' + deltaCol + '">' + arrow + ' ' + Math.abs(r.delta) + '<span style="font-size:.7em;font-weight:400"> mg/dL</span></div></div>';
     html += '</div>';
     // 視覺差異條
     html += '<div style="height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;">';
