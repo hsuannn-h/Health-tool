@@ -2091,7 +2091,7 @@ function renderEventAnalysis() {
   if (!wrap) return;
 
   if (!results.length) {
-    wrap.innerHTML = '<div style="font-size:.82em;color:var(--text3);padding:8px 0">血糖紀錄不足（需要至少 3 筆含事件標記的紀錄）</div>';
+    wrap.innerHTML = '<div style="font-size:.82em;color:var(--text-on-dark);padding:8px 0">血糖紀錄不足（需要至少 3 筆含事件標記的紀錄）</div>';
     return;
   }
 
@@ -2106,8 +2106,8 @@ function renderEventAnalysis() {
     html += '<div style="background:var(--surface);border:.5px solid var(--border);border-top:1px solid var(--gold,rgba(180,158,90,0.3));border-radius:var(--rsm);padding:13px 14px;margin-bottom:8px;">';
     // 標題行
     html += '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;">';
-    html += '<span style="font-size:.92em;font-weight:600;color:var(--text)">' + r.ev + '</span>';
-    html += '<span style="font-size:.75em;color:var(--text3)">' + r.count + '次 / ' + r.pct + '%</span>';
+    html += '<span style="font-size:.92em;font-weight:600;color:var(--text-on-dark)">' + r.ev + '</span>';
+    html += '<span style="font-size:.75em;color:var(--text-on-dark)">' + r.count + '次 / ' + r.pct + '%</span>';
     html += '</div>';
     // 數值行
     html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;">';
